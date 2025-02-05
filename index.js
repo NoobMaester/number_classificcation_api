@@ -60,7 +60,7 @@ app.get('/api/classify-number', (req, res) => {
     is_prime: isPrime(number),
     is_perfect: isPerfect(number),
     properties: [
-      isArmstrong(number) ? "Armstrong" : "Non-Armstrong",
+      isArmstrong(number) ? "Armstrong" : null,
       isEven(number) ? "Even" : "Odd"
     ].filter(Boolean),
     digit_sum: digitSum(number),
