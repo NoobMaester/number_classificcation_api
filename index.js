@@ -1,7 +1,9 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 
 // Helper functions
 const isPrime = num => {
@@ -25,8 +27,6 @@ const isArmstrong = (num) => {
   return num === sum;
 };
 
-const isOdd = num => num % 2 !== 0;
-
 const isEven = num => num % 2 === 0;
 
 const digitSum = num => num.toString().split('').reduce((a, b) => a + parseInt(b), 0);
@@ -40,26 +40,34 @@ const numberFacts = {
   28: "Twenty-eight is the third positive integer with a prime factorization of the form 22q where q is an odd prime.",
   42: "Forty-two is the third pentadecagonal number.",
   69: "Sixty-nine is a value of n where n2 and n3 together contain each digit once.",
-  317: "Three hundred seventeen is the number of binary 4x4 matrices up to permutations of rows and columns."
+  371: "Three hundred seventy-one is a narcissistic number."
 };
 
-app.get('/api/:number', (req, res) => {
-  const number = parseInt(req.params.number);
+app.get('/api/classify-number', (req, res) => {
+  const input = req.query.number;
+  const number = parseInt(input);
   
-  if(isNaN(number)) {
-    return res.status(400).json({ error: "Please provide a valid number" });
+  // Check if input is missing, non-integer, or negative
+  if (input === undefined || !Number.isInteger(number) || number < 0) {
+    return res.status(400).json({
+      number: input,
+      error: true
+    });
   }
 
   const response = {
     number: number,
     is_prime: isPrime(number),
     is_perfect: isPerfect(number),
-    properties:[isArmstrong(number), isOdd(number), isEven(number)],
+    properties: [
+      isArmstrong(number) ? "Armstrong" : "Non-Armstrong",
+      isEven(number) ? "Even" : "Odd"
+    ].filter(Boolean),
     digit_sum: digitSum(number),
-    funFact: numberFacts[number] || "No fun fact found for this number."
+    funFact: numberFacts[number] || "No fun fact found for this number in our database yet."
   };
 
   res.json(response);
 });
 
-app.listen(port, () => console.log(`Number Explorer API running on port ${port}`));
+app.listen(port, () => console.log(`Number classification API running on port ${port}`));
