@@ -52,7 +52,7 @@ app.get("/api/classify-number", (req, res) => {
   const input = req.query.number;
 
   // check if input is missing
-  if (input === undefined) {
+  if (input === undefined || input === "") {
     return res.status(400).json({
       number: input,
       error: true,
