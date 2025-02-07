@@ -73,7 +73,7 @@ app.get('/api/classify-number', (req, res) => {
       isEven(num) ? "Even" : "Odd"
     ].filter(Boolean),
     digit_sum: digitSum(num), //sum of digits
-    funFact: numberFacts[num] || "No fun fact found for this number in our database yet." //gotten from the numbers API
+    fun_fact: numberFacts[num] || "No fun fact found for this number in our database yet." //gotten from the numbers API
   };
 
   res.json(response);
