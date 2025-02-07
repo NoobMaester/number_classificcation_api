@@ -45,26 +45,35 @@ const numberFacts = {
 
 app.get('/api/classify-number', (req, res) => {
   const input = req.query.number;
-  const number = parseInt(input);
   
-  // Check if input is missing, non-integer, or negative
-  if (input === undefined || !Number.isInteger(number) || number < 0) {
+  // check if input is missing
+  if (input === undefined) {
     return res.status(400).json({
-      number: input,
+      number: "alphabet",
+      error: true
+    });
+  }
+  //convert input to number
+  const num = Number(input);
+  
+  // Check if input is a valid number, not a float, or negative
+  if (isNaN(num) || !Number.isInteger(num) || num < 0) {
+    return res.status(400).json({
+      number: "alphabet",
       error: true
     });
   }
 
   const response = {
-    number: number,
-    is_prime: isPrime(number),
-    is_perfect: isPerfect(number),
+    number: num,
+    is_prime: isPrime(num),
+    is_perfect: isPerfect(num),
     properties: [
-      isArmstrong(number) ? "Armstrong" : null,
-      isEven(number) ? "Even" : "Odd"
+      isArmstrong(num) ? "Armstrong" : null,
+      isEven(num) ? "Even" : "Odd"
     ].filter(Boolean),
-    digit_sum: digitSum(number),
-    funFact: numberFacts[number] || "No fun fact found for this number in our database yet."
+    digit_sum: digitSum(num), //sum of digits
+    funFact: numberFacts[num] || "No fun fact found for this number in our database yet." //gotten from the numbers API
   };
 
   res.json(response);
