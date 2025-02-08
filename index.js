@@ -61,8 +61,11 @@ app.get("/api/classify-number", (req, res) => {
   //convert input to number
   const num = Number(input);
 
+  //convert negative numbers to positive
+  const absoluteNum = Math.abs(num);
+
   // Check if input is a valid number, not a float, or negative
-  if (isNaN(num) || !Number.isInteger(num) || num < 0) {
+  if (isNaN(num) || !Number.isInteger(num)) {
     return res.status(400).json({
       number: input,
       error: true,
@@ -72,14 +75,14 @@ app.get("/api/classify-number", (req, res) => {
   const response = {
     number: num,
     is_prime: isPrime(num),
-    is_perfect: isPerfect(num),
+    is_perfect: isPerfect(absoluteNum),
     properties: [
-      isArmstrong(num) ? "armstrong" : null,
-      isEven(num) ? "even" : "odd",
+      isArmstrong(absoluteNum) ? "armstrong" : null,
+      isEven(absoluteNum) ? "even" : "odd",
     ].filter(Boolean),
-    digit_sum: digitSum(num), //sum of digits
+    digit_sum: digitSum(absoluteNum), //sum of digits
     fun_fact:
-      numberFacts[num] ||
+      numberFacts[absoluteNum] ||
       "No fun fact found for this number in our database yet.", //gotten from the numbers API
   };
 
